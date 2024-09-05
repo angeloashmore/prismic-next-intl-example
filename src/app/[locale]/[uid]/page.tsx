@@ -5,15 +5,15 @@ import { SliceZone } from "@prismicio/react";
 
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
-import { reverseLocaleLookup } from "@/i18n";
+import { shortLocaleToLong, longLocaleToShort } from "@/i18n/routing";
 import { Locales } from "@/components/Locales";
 
-type Params = { lang: string; uid: string };
+type Params = { locale: string; uid: string };
 
 export default async function Page({ params }: { params: Params }) {
   const client = createClient();
   const page = await client.getByUID("page", params.uid, {
-    lang: reverseLocaleLookup(params.lang),
+    lang: shortLocaleToLong(params.locale),
   });
 
   return (
@@ -31,7 +31,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const client = createClient();
   const page = await client.getByUID("page", params.uid, {
-    lang: reverseLocaleLookup(params.lang),
+    lang: shortLocaleToLong(params.locale),
   });
 
   return {
@@ -44,12 +44,12 @@ export async function generateMetadata({
   };
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Params[]> {
   const client = createClient();
   const pages = await client.getAllByType("page", { lang: "*" });
 
   return pages.map((page) => ({
-    lang: page.lang,
+    locale: longLocaleToShort(page.lang),
     uid: page.uid,
   }));
 }

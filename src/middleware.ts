@@ -1,12 +1,11 @@
-import { createLocaleRedirect, pathnameHasLocale } from "@/i18n";
-import { NextRequest } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
-export async function middleware(request: NextRequest) {
-  if (!pathnameHasLocale(request)) {
-    return createLocaleRedirect(request);
-  }
-}
+export default createMiddleware(routing, {
+  localeDetection: false,
+  alternateLinks: false,
+});
 
 export const config = {
-  matcher: ["/((?!_next|api|slice-simulator|icon.svg).*)"],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
