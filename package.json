@@ -14,15 +14,18 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@formatjs/intl-localematcher": "^0.5.4",
     "@prismicio/client": "^7.8.1",
     "@prismicio/next": "^1.6.0",
     "@prismicio/react": "^2.8.0",
+    "negotiator": "^0.6.3",
     "next": "^14.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@slicemachine/adapter-next": "^0.3.49",
+    "@types/negotiator": "^0.6.3",
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

@@ -12,8 +12,11 @@ export const repositoryName =
  * The project's Prismic Route Resolvers. This list determines a Prismic document's URL.
  */
 const routes: prismic.ClientConfig["routes"] = [
-  { type: "page", path: "/", uid: "home" },
-  { type: "page", path: "/:uid" },
+  { type: "homepage", lang: "en-us", path: "/en" },
+  { type: "homepage", lang: "fr-fr", path: "/fr" },
+
+  { type: "page", lang: "en-us", path: "/en/:uid" },
+  { type: "page", lang: "fr-fr", path: "/fr/:uid" },
 ];
 
 /**
@@ -36,3 +39,37 @@ export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
 
   return client;
 };
+
+/**
+ * Returns an array of document metadata containing each locale a document has
+ * been translated into.
+ *
+ * A `lang_name` property is included in each document containing the document's
+ * locale name as it is configured in the Prismic repository.
+ */
+export async function getLocales(
+  doc: prismic.PrismicDocument,
+  client: prismic.Client,
+): Promise<(prismic.PrismicDocument & { lang_name?: string })[]> {
+  const repository = await client.getRepository();
+
+  const altDocs =
+    doc.alternate_languages.length > 0
+      ? await client.getAllByIDs(
+          doc.alternate_languages.map((altLang) => altLang.id),
+          {
+            lang: "*",
+            // Exclude all fields to speed up the query.
+            fetch: `${doc.type}.__nonexistent-field__`,
+          },
+        )
+      : [];
+
+  return [doc, ...altDocs].map((doc) => {
+    return {
+      ...doc,
+      lang_name: repository.languages.find((lang) => lang.id === doc.lang)
+        ?.name,
+    };
+  });
+}
