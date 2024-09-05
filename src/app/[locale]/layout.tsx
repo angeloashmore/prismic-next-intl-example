@@ -1,5 +1,8 @@
+import { PrismicPreview } from "@prismicio/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, unstable_setRequestLocale } from "next-intl/server";
+
+import { repositoryName } from "@/prismicio";
 
 export default async function LocaleLayout({
   children,
@@ -20,6 +23,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
   );
