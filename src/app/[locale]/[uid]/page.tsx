@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 
+import { unstable_setRequestLocale } from "next-intl/server";
 import { asText } from "@prismicio/client";
 import { SliceZone } from "@prismicio/react";
 
@@ -11,6 +12,8 @@ import { Locales } from "@/components/Locales";
 type Params = { locale: string; uid: string };
 
 export default async function Page({ params }: { params: Params }) {
+  unstable_setRequestLocale(params.locale);
+
   const client = createClient();
   const page = await client.getByUID("page", params.uid, {
     lang: shortLocaleToLong(params.locale),
